@@ -1,0 +1,13 @@
+/**
+ * ⚠️ UWAGA: Ten plik został przeniesiony do struktury Next.js 16 App Router
+ * 
+ * Style globalne znajdują się teraz w:
+ * /app/globals.css
+ * 
+ * Ten plik nie jest używany w wersji Next.js aplikacji.
+ * Wszystkie style zostały przeniesione do /app/globals.css
+ * 
+ * Jeśli widzisz ten plik w bundlu Vite, upewnij się że:
+ * - Używasz Next.js dev server: npm run dev
+ * - Nie importujesz tego pliku z żadnego komponentu
+ */
