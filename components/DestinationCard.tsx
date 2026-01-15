@@ -15,7 +15,7 @@ interface DestinationCardProps {
   destination: Destination;
   index: number;
   isFavorite: boolean;
-  onToggleFavorite: (id: string, destination?: Destination) => void;
+  onToggleFavorite: (destination: Destination) => void;
   onShowDetails: () => void;
 }
 
@@ -30,7 +30,7 @@ export function DestinationCard({
   
   const handleFavoriteClick = () => {
     setIsAnimating(true);
-    onToggleFavorite(destination.id, destination);
+    onToggleFavorite(destination);
     setTimeout(() => setIsAnimating(false), 600);
   };
 

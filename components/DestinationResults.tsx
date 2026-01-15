@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Destination } from '../types';
 import { DestinationCard } from './DestinationCard';
 import { DestinationModal } from './DestinationModal';
@@ -10,13 +10,13 @@ interface DestinationResultsProps {
   destinations: Destination[];
   isLoading: boolean;
   favorites: Destination[];
-  onToggleFavorite: (id: string, destination?: Destination) => void;
+  onToggleFavorite: (destination: Destination) => void;
   hasSearched: boolean;
 }
 
 export function DestinationResults({ destinations, isLoading, favorites, onToggleFavorite, hasSearched }: DestinationResultsProps) {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
- 
+ console.log(favorites)
   if (isLoading) {
     return (
       <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border border-blue-200/50">
@@ -82,7 +82,7 @@ export function DestinationResults({ destinations, isLoading, favorites, onToggl
             key={`${destination.id}-${index}`}
             destination={destination}
             index={index}
-            isFavorite={favorites.some(fav => fav.id === destination.id)}
+            isFavorite={favorites.some(fav => fav.name === destination.name)}
             onToggleFavorite={onToggleFavorite}
             onShowDetails={() => setSelectedDestination(destination)}
           />

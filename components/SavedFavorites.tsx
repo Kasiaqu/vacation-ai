@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 
 interface SavedFavoritesProps {
   favorites: Destination[];
-  onToggleFavorite: (id: string, destination?: Destination) => void;
+  onToggleFavorite: (destination: Destination) => void;
   onClearAll: () => void;
 }
 
@@ -65,7 +65,7 @@ export function SavedFavorites({ favorites, onToggleFavorite, onClearAll }: Save
         <div className="grid md:grid-cols-3 gap-6">
           {favorites.map((destination, index) => (
             <DestinationCard
-              key={destination.id}
+              key={destination.name}
               destination={destination}
               index={index}
               isFavorite={true}

@@ -5,7 +5,7 @@ import { Destination } from "../types";
 
 interface FavoritesContextValue {
   favorites: Destination[];
-  toggleFavorite: (id: string, destination?: Destination) => void;
+  toggleFavorite: (destination: Destination) => void;
   clearAllFavorites: () => void;
 }
 
@@ -35,10 +35,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }
   }, [favorites, isHydrated]);
 
-  const toggleFavorite = (id: string, destination?: Destination) => {
+  const toggleFavorite = (destination: Destination) => {
     setFavorites((prev) => {
-      const exists = prev.some((f) => f.id === id);
-      if (exists) return prev.filter((f) => f.id !== id);
+      const exists = prev.some((f) => f.name === destination.name);
+      if (exists) return prev.filter((f) => f.name !== destination.name);
       return destination ? [...prev, destination] : prev;
     });
   };
