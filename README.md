@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+
+# Travel Planner
+
+Travel Planner is a modern, AI-powered web application that helps you discover your next dream holiday destination. Built with Next.js and TypeScript, it leverages OpenAI to generate personalized travel recommendations based on your preferences. The app fetches real images for each destination and allows you to save your favorites for future inspiration.
+
+## Features
+
+- **Multi-step Search Form:** The homepage features a clear, interactive form that guides you through selecting your travel preferences. You can choose:
+	- Vacation type (e.g., city break, beach, mountains, adventure, culture, safari)
+	- Continent
+	- Best months for travel
+	- Desired temperature range
+	- Flight duration
+
+- **AI-Powered Recommendations:** After submitting your preferences, the app uses OpenAI to generate up to three tailored travel destinations that best match your criteria.
+
+- **Live Destination Images:** For each recommended destination, the app fetches real images using the Google Custom Search API, making the experience visually engaging.
+
+- **Destination Details Modal:** Click on any destination to view a detailed modal with a description, highlights, travel tips, best months, activities, and a large image.
+
+- **Favorites System:** You can save and manage your favorite destinations. The favorites are stored locally in your browser and accessible from the dedicated Favorites page.
+
+- **Responsive, Modern UI:** The interface is built with React and Tailwind CSS, ensuring a smooth experience on both desktop and mobile devices.
+
+- **Error Handling & User Guidance:** If no destinations are found, the app provides helpful tips to adjust your preferences and try again.
+
+## How It Works
+
+1. **Fill Out the Form:** On the homepage, answer a few questions about your travel preferences.
+2. **Get AI Recommendations:** The app sends your preferences to an API route, which queries OpenAI for the best matching destinations.
+3. **Browse Results:** View up to three recommended destinations, each with a real photo and key information.
+4. **View Details:** Click on a destination to see more details in a modal window.
+5. **Save Favorites:** Mark destinations as favorites to save them for later. Access all your favorites from the Favorites page.
+
+## Screenshots
+
+**Header**  
+Start your travel planning journey with an inviting homepage and easy navigation.
+
+<img src="public/readme/1.png" alt="Header" width="600" />
+
+
+**Travel Planner Form**  
+Select your vacation type, preferred temperature, continent, and other preferences in a clear, interactive form.
+
+<img src="public/readme/2.png" alt="Travel Planner Form" width="600" />
+
+
+
+**Three AI-recommended destinations**  
+The app presents three travel destinations found by the AI, each with a summary and image. Click any card to see more details about the place.
+
+<img src="public/readme/3.png" alt="Three AI-recommended destinations" width="600" />
+
+
+
+**Destination details view**  
+Explore all details of a selected destination: images, description, highlights, travel tips, and more.
+
+<img src="public/readme/4.png" alt="Destination details view" width="600" />
+
+
+
+**Favorites view**  
+Easily access and manage your saved favorite destinations.
+
+<img src="public/readme/5.png" alt="Favorites view" width="600" />
+
+
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+	```bash
+	git clone https://github.com/Kasiaqu/vacation-ai.git
+	cd vacation-ai
+	```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+	```bash
+	npm install
+	```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Set up environment variables:**
+		- Create a `.env.local` file in the root directory.
+		- Add your OpenAI and Google Custom Search API keys:
 
-## Learn More
+	```env
+	OPENAI_API_KEY=your-openai-key
 
-To learn more about Next.js, take a look at the following resources:
+	GOOGLE_API_KEY=your-google-api-key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+	GOOGLE_CSE_ID=your-google-cse-id
+	```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Run the development server:**
+	```bash
+	npm run dev
+	```
 
-## Deploy on Vercel
+5. **Open [http://localhost:3000](http://localhost:3000) in your browser.**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Technologies Used
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js](https://nextjs.org/) (App Router)
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [OpenAI API](https://platform.openai.com/docs/api-reference)
+- [Google Custom Search API](https://developers.google.com/custom-search/v1/overview)
