@@ -38,34 +38,34 @@ Travel Planner is a modern, AI-powered web application that helps you discover y
 **Header**  
 Start your travel planning journey with an inviting homepage and easy navigation.
 
-<img src="public/readme/1.png" alt="Header" width="600" />
+<img src="public/readme/1.png" alt="Header" width="900" />
 
 
 **Travel Planner Form**  
 Select your vacation type, preferred temperature, continent, and other preferences in a clear, interactive form.
 
-<img src="public/readme/2.png" alt="Travel Planner Form" width="600" />
+<img src="public/readme/2.png" alt="Travel Planner Form" width="900" />
 
 
 
 **Three AI-recommended destinations**  
 The app presents three travel destinations found by the AI, each with a summary and image. Click any card to see more details about the place.
 
-<img src="public/readme/3.png" alt="Three AI-recommended destinations" width="600" />
+<img src="public/readme/3.png" alt="Three AI-recommended destinations" width="900" />
 
 
 
 **Destination details view**  
 Explore all details of a selected destination: images, description, highlights, travel tips, and more.
 
-<img src="public/readme/4.png" alt="Destination details view" width="600" />
+<img src="public/readme/4.png" alt="Destination details view" width="900" />
 
 
 
 **Favorites view**  
 Easily access and manage your saved favorite destinations.
 
-<img src="public/readme/5.png" alt="Favorites view" width="600" />
+<img src="public/readme/5.png" alt="Favorites view" width="900" />
 
 
 
