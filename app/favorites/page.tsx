@@ -21,7 +21,7 @@ export default function FavoritesPage() {
       <div className="max-w-4xl mx-auto">
         {favorites.length === 0 ? (
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-16 text-center border border-sky-200/50">
-            <div className="w-24 h-24 bg-gradient-to-br from-sky-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-24 h-24 bg-linear-to-br from-sky-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Heart className="w-12 h-12 text-sky-400" />
             </div>
             <h2 className="text-3xl text-gray-800 mb-4">No favorites yet</h2>
@@ -31,7 +31,7 @@ export default function FavoritesPage() {
             <Link
               href="/"
               scroll={false}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span className="text-lg">Discover Destinations</span>
             </Link>

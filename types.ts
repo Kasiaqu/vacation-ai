@@ -1,22 +1,20 @@
 export interface Destination {
-  id: string;
-  name: string;
+  activities: string[];
+  bestMonths: string[];
+  budget: 'budget' | 'moderate' | 'luxury';
+  continent: string;
+  coordinates?: { lat: number; lng: number };
   country: string;
   description: string;
-  temperature: string;
-  bestMonths: string[];
-  imageQuery: string;
-  imageUrl?: string;
-  imageUrls?: string[];
-  budget: 'budget' | 'moderate' | 'luxury';
-  activities: string[];
-  highlights: string[];
-  travelTip: string;
   flightDuration?: string;
-  difficulty?: 'easy' | 'moderate' | 'challenging';
-  continent: string;
+  highlights: string[];
+  id: string;
+  images: string[];
+  name: string;
+  reason: string;
+  temperature: string;
+  travelTip: string;
   vacationType: string[];
-  coordinates?: { lat: number; lng: number };
 }
 
 export interface VacationPreferences {
@@ -25,4 +23,27 @@ export interface VacationPreferences {
   vacationType: string[];
   continent: string[];
   flightDuration: string[];
+}
+
+export interface GoogleImageSearchItem {
+  link: string;
+  mime: string;
+  title: string;
+  image: {
+    contextLink: string;
+    height: number;
+    width: number;
+    thumbnailLink: string;
+    thumbnailHeight: number;
+    thumbnailWidth: number;
+  };
+}
+
+export interface GoogleImageSearchResponse {
+  kind: 'customsearch#search';
+  items?: GoogleImageSearchItem[];
+  searchInformation: {
+    totalResults: string;
+    searchTime: number;
+  };
 }

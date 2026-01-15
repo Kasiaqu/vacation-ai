@@ -16,7 +16,6 @@ export function SavedFavorites({ favorites, onToggleFavorite, onClearAll }: Save
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [showClearAllModal, setShowClearAllModal] = useState(false);
 
-  // Handle scrollbar compensation for Clear All modal
   useEffect(() => {
     if (showClearAllModal) {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
@@ -72,7 +71,6 @@ export function SavedFavorites({ favorites, onToggleFavorite, onClearAll }: Save
               isFavorite={true}
               onToggleFavorite={onToggleFavorite}
               onShowDetails={() => setSelectedDestination(destination)}
-              userLocation={null}
             />
           ))}
         </div>
@@ -86,7 +84,6 @@ export function SavedFavorites({ favorites, onToggleFavorite, onClearAll }: Save
         />
       )}
 
-      {/* Clear All Confirmation Modal */}
       {showClearAllModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-slideUp">

@@ -4,14 +4,10 @@ import { useState } from 'react';
 import { VacationForm } from '../components/VacationForm';
 import { DestinationResults } from '../components/DestinationResults';
 import { Destination, VacationPreferences } from '../types';
-import { getAllDestinations } from '../utils/destinationData';
 import { useFavorites } from '@/context/FavoritesContext';
 
-interface HomePageProps {
-  userLocation: { lat: number; lng: number } | null;
-}
 
-export default function HomePage({ userLocation }: HomePageProps) {
+export default function HomePage() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -20,31 +16,38 @@ export default function HomePage({ userLocation }: HomePageProps) {
   const handleGenerateSuggestions = async (preferences: VacationPreferences) => {
     setIsLoading(true);
     setHasSearched(true);
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const allDestinations = getAllDestinations();
-    const matches = allDestinations.filter(dest => {
-      const monthMatch = preferences.month.length === 0 || dest.bestMonths.some(m => preferences.month.includes(m));
-      const tempMatch = preferences.temperature.length === 0 || preferences.temperature.includes(dest.temperature);
-      const typeMatch = preferences.vacationType.length === 0 || (dest.vacationType && dest.vacationType.length > 0 && preferences.vacationType.every(type => dest.vacationType!.includes(type)));
-      const continentMatch = preferences.continent.length === 0 || preferences.continent.includes(dest.continent || '');
-      const flightMatch = preferences.flightDuration.length === 0 || preferences.flightDuration.includes(dest.flightDuration || '');
-      
-      return monthMatch && tempMatch && typeMatch && continentMatch && flightMatch;
-    });
-    
-    const shuffled = matches.sort(() => Math.random() - 0.5);
-    const topThree = shuffled.slice(0, 3);
-    
-    setDestinations(topThree);
-    setIsLoading(false);
+
+    try {
+      const resp = await fetch('/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preferences })
+      });
+
+      if (!resp.ok) {
+        console.error('API error', resp.status);
+        setDestinations([]);
+        return;
+      }
+
+      const json = await resp.json();
+      if (Array.isArray(json.recommendations) && json.recommendations.length > 0) {
+        setDestinations(json.recommendations);
+      } else {
+        setDestinations([]);
+      }
+    } catch (err) {
+      console.error('Fetch error', err);
+      setDestinations([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
       <header className="text-center mb-16">
-        <h1 className="text-6xl mb-4 text-white drop-shadow-2xl">✈️ Vacation Helper</h1>
+        <h1 className="text-6xl mb-4 text-white drop-shadow-2xl">✈️ Travel Planner</h1>
         <p className="text-sky-50 text-xl drop-shadow-lg mb-8 max-w-2xl mx-auto leading-relaxed">
           Answer a few questions and discover your perfect vacation destinations
         </p>
@@ -64,7 +67,6 @@ export default function HomePage({ userLocation }: HomePageProps) {
         </div>
       </header>
 
-      {/* Form Section - Centered with max width */}
       <div className="mb-12 max-w-4xl mx-auto">
         <VacationForm 
           onSubmit={handleGenerateSuggestions} 
@@ -72,14 +74,12 @@ export default function HomePage({ userLocation }: HomePageProps) {
         />
       </div>
 
-      {/* Results Section - Below form */}
       <div className="max-w-4xl mx-auto">
         <DestinationResults 
           destinations={destinations}
           isLoading={isLoading}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
-          userLocation={userLocation}
           hasSearched={hasSearched}
         />
       </div>

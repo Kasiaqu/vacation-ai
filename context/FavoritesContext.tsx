@@ -11,10 +11,11 @@ interface FavoritesContextValue {
 
 const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
 
+
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Destination[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load favorites from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("vacationFavorites");
     if (saved) {
@@ -22,14 +23,17 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         setFavorites(JSON.parse(saved));
       } catch (e) {
         console.error("Error loading favorites:", e);
+        setFavorites([]);
       }
     }
+    setIsHydrated(true);
   }, []);
 
-  // Save favorites whenever they change
   useEffect(() => {
-    localStorage.setItem("vacationFavorites", JSON.stringify(favorites));
-  }, [favorites]);
+    if (isHydrated) {
+      localStorage.setItem("vacationFavorites", JSON.stringify(favorites));
+    }
+  }, [favorites, isHydrated]);
 
   const toggleFavorite = (id: string, destination?: Destination) => {
     setFavorites((prev) => {
@@ -41,6 +45,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   const clearAllFavorites = () => setFavorites([]);
 
+  if (!isHydrated) return null;
   return (
     <FavoritesContext.Provider value={{ favorites, toggleFavorite, clearAllFavorites }}>
       {children}

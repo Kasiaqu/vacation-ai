@@ -34,7 +34,7 @@ export function Navigation({ favoritesCount }: NavigationProps) {
           className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:scale-105 text-white drop-shadow-lg hover:text-cyan-300 backdrop-blur-sm bg-white/10 hover:bg-white/20 cursor-pointer w-45 justify-center whitespace-nowrap"
         >
           <Plane className="w-5 h-5" />
-          <span>Vacation Helper</span>
+          <span>Travel Planner</span>
         </Link>
       )}
     </nav>

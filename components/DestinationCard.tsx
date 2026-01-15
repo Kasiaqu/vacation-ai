@@ -3,7 +3,7 @@
 import { Destination } from '../types';
 import { Heart, MapPin, DollarSign, Plane, ThermometerSun, Calendar } from 'lucide-react';
 import { useState } from 'react';
-import { calculateDistance, calculateFlightDuration, temperatureDescriptions, budgetDescriptions } from '../utils/locationUtils';
+import { temperatureDescriptions, budgetDescriptions } from '../utils/locationUtils';
 import {
   Tooltip,
   TooltipContent,
@@ -17,7 +17,6 @@ interface DestinationCardProps {
   isFavorite: boolean;
   onToggleFavorite: (id: string, destination?: Destination) => void;
   onShowDetails: () => void;
-  userLocation: { lat: number; lng: number } | null;
 }
 
 export function DestinationCard({ 
@@ -26,7 +25,6 @@ export function DestinationCard({
   isFavorite, 
   onToggleFavorite,
   onShowDetails,
-  userLocation
 }: DestinationCardProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   
@@ -43,19 +41,10 @@ export function DestinationCard({
   };
 
   const budget = destination.budget && budgetInfo[destination.budget as keyof typeof budgetInfo] 
-    ? budgetInfo[destination.budget as keyof typeof budgetInfo]
+    ? budgetInfo[destination.budget.toLocaleLowerCase() as keyof typeof budgetInfo]
     : budgetInfo.moderate;
 
-  let flightDuration = destination.flightDuration || 'Time varies';
-  if (userLocation && destination.coordinates) {
-    const distance = calculateDistance(
-      userLocation.lat,
-      userLocation.lng,
-      destination.coordinates.lat,
-      destination.coordinates.lng
-    );
-    flightDuration = calculateFlightDuration(distance);
-  }
+    const flightDuration = destination.flightDuration || 'Time varies';
 
   const tempKey = destination.temperature.toLowerCase().includes('cold') ? 'cold'
     : destination.temperature.toLowerCase().includes('cool') ? 'cool'
@@ -71,16 +60,14 @@ export function DestinationCard({
         className="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 border border-blue-200/50 animate-slideUp flex flex-col"
         style={{ animationDelay: `${index * 150}ms` }}
       >
-        {/* Image Section */}
         <div className="relative h-64 overflow-hidden group">
           <img
-            src={destination.imageUrl}
+            src={destination.images[0]}
             alt={destination.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
 
-          {/* Favorite Button */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -99,7 +86,6 @@ export function DestinationCard({
             </TooltipContent>
           </Tooltip>
 
-          {/* Destination Name on Image */}
           <div className="absolute bottom-4 left-4 right-4">
             <h3 className="text-3xl text-white mb-1 drop-shadow-lg">{cityName}</h3>
             <div className="flex items-center gap-2 text-white/90">
@@ -109,13 +95,11 @@ export function DestinationCard({
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="p-5 flex-1 flex flex-col">
           <p className="text-gray-700 text-sm mb-4 leading-relaxed line-clamp-3">
             {destination.description}
           </p>
 
-          {/* Quick Info Tags */}
           <div className="flex flex-wrap gap-2 mb-4">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -145,7 +129,7 @@ export function DestinationCard({
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className={`flex items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r ${budget.gradient} rounded-lg text-white cursor-help`}>
+                <div className={`flex items-center gap-1.5 px-2.5 py-1.5 bg-linear-to-r ${budget.gradient} rounded-lg text-white cursor-help`}>
                   <DollarSign className="w-3.5 h-3.5" />
                   <span className="text-xs">{budget.label}</span>
                 </div>
@@ -159,7 +143,9 @@ export function DestinationCard({
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-indigo-50 rounded-lg border border-indigo-200 cursor-help">
                   <Plane className="w-3.5 h-3.5 text-indigo-600" />
-                  <span className="text-xs text-indigo-700">{flightDuration}</span>
+                  <span className="text-xs text-indigo-700">
+                    {flightDuration}
+                  </span>
                 </div>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
@@ -168,10 +154,10 @@ export function DestinationCard({
             </Tooltip>
           </div>
 
-          {/* Show Details Button */}
           <button
+          type="button"
             onClick={onShowDetails}
-            className="mt-auto w-full py-3 text-sm bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2 cursor-pointer"
+            className="mt-auto w-full py-3 text-sm bg-linear-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>View Full Details</span>
           </button>

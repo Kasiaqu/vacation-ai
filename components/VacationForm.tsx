@@ -1,47 +1,71 @@
 'use client';
 
 import { useRef } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { Plane, Building2, Waves, Mountain, Compass, Landmark, Binoculars, X } from 'lucide-react';
+import { useForm, Controller, Control } from 'react-hook-form';
+import { Plane, Building2, Waves, Mountain, Compass, Landmark, Binoculars, X, LucideIcon } from 'lucide-react';
+
 import clsx from 'clsx';
 
+type FormValues = {
+  month: string[];
+  temperature: string[];
+  vacationType: string[];
+  continent: string[];
+  flightDuration: string[];
+};
+
 interface VacationFormProps {
-  onSubmit: (preferences: {
-    month: string[];
-    temperature: string[];
-    vacationType: string[];
-    continent: string[];
-    flightDuration: string[];
-  }) => void;
+  onSubmit: (preferences: FormValues) => void;
   isLoading: boolean;
 }
+ 
+type Continent = 'europe' | 'asia' | 'north america' | 'south america' | 'africa' | 'oceania'
+type VacationType = 'city break' | 'sea' | 'mountains' | 'adventure' | 'culture' | 'safari';
+type Temperature = 'cold' | 'cool' | 'warm' | 'hot';
+type Month =  'January' | 'February' | 'March' | 'April' | 'May' | 'June' | 'July' | 'August' | 'September' | 'October' | 'November' | 'December';
+type FlightDuration = '0-4' | '4-10' | '10+';
 
-const vacationTypes = [
-  { id: 'city break', label: 'City Break', icon: Building2, color: 'orange' },
-  { id: 'sea', label: 'Beach', icon: Waves, color: 'cyan' },
-  { id: 'mountains', label: 'Mountains', icon: Mountain, color: 'green' },
-  { id: 'adventure', label: 'Adventure', icon: Compass, color: 'indigo' },
-  { id: 'culture', label: 'Culture', icon: Landmark, color: 'blue' },
-  { id: 'safari', label: 'Safari & Wildlife', icon: Binoculars, color: 'yellow' }
+type BaseOption<T extends string> = {
+  value: T;
+  label: string;
+  description?: string;
+};
+
+type EmojiOption<T extends string> = BaseOption<T> & {
+  emoji: string;
+};
+
+type IconOption<T extends string> = BaseOption<T> & {
+  icon: LucideIcon;
+  color: string;
+};
+
+const vacationTypes: IconOption<VacationType>[] = [
+  { value: 'city break', label: 'City Break', icon: Building2, color: 'orange' },
+  { value: 'sea', label: 'Beach', icon: Waves, color: 'cyan' },
+  { value: 'mountains', label: 'Mountains', icon: Mountain, color: 'green' },
+  { value: 'adventure', label: 'Adventure', icon: Compass, color: 'indigo' },
+  { value: 'culture', label: 'Culture', icon: Landmark, color: 'blue' },
+  { value: 'safari', label: 'Safari & Wildlife', icon: Binoculars, color: 'yellow' }
 ];
 
-const continents = [
-  { id: 'europe', label: 'Europe', emoji: '🏰' },
-  { id: 'asia', label: 'Asia', emoji: '🏯' },
-  { id: 'north america', label: 'North America', emoji: '🗽' },
-  { id: 'south america', label: 'South America', emoji: '🦜' },
-  { id: 'africa', label: 'Africa', emoji: '🦁' },
-  { id: 'oceania', label: 'Oceania', emoji: '🦘' }
+const continents: EmojiOption<Continent>[] = [
+  { value: 'europe', label: 'Europe', emoji: '🏰' },
+  { value: 'asia', label: 'Asia', emoji: '🏯' },
+  { value: 'north america', label: 'North America', emoji: '🗽' },
+  { value: 'south america', label: 'South America', emoji: '🦜' },
+  { value: 'africa', label: 'Africa', emoji: '🦁' },
+  { value: 'oceania', label: 'Oceania', emoji: '🦘' }
 ];
 
-const temperatures = [
-  { value: 'cold', label: 'Cold', emoji: '❄️', degrees: '<10°C' },
-  { value: 'cool', label: 'Cool', emoji: '🌤️', degrees: '10-20°C' },
-  { value: 'warm', label: 'Warm', emoji: '☀️', degrees: '20-30°C' },
-  { value: 'hot', label: 'Hot', emoji: '🔥', degrees: '>30°C' }
+const temperatures: EmojiOption<Temperature>[] = [
+  { value: 'cold', label: 'Cold', emoji: '❄️', description: '<10°C' },
+  { value: 'cool', label: 'Cool', emoji: '🌤️', description: '10-20°C' },
+  { value: 'warm', label: 'Warm', emoji: '☀️', description: '20-30°C' },
+  { value: 'hot', label: 'Hot', emoji: '🔥', description: '>30°C' }
 ];
 
-const months = [
+const months: BaseOption<Month>[] = [
   { value: 'January', label: 'January' },
   { value: 'February', label: 'February' },
   { value: 'March', label: 'March' },
@@ -56,20 +80,25 @@ const months = [
   { value: 'December', label: 'December' }
 ];
 
-const flightDurations = [
-  { value: '0-4', label: 'Up to 4h', emoji: '✈️', category: 'Short flight' },
-  { value: '4-10', label: '4-10h', emoji: '🌍', category: 'Medium flight' },
-  { value: '10+', label: '10h+', emoji: '🛫', category: 'Long flight' }
+const flightDurations: EmojiOption<FlightDuration>[] = [
+  { value: '0-4', label: 'Short flight', emoji: '✈️', description: 'Up to 4h' },
+  { value: '4-10', label: 'Medium flight', emoji: '🌍', description: '4-10h' },
+  { value: '10+', label: 'Long flight', emoji: '🛫', description: '10h+' }
 ];
 
+
+ interface ToggleGroupProps<OptionType> {
+    name: keyof FormValues;
+    options: OptionType[];
+    getValue: (option: OptionType) => string;
+    renderContent: (option: OptionType) => React.ReactNode;
+    getButtonClass: (option: OptionType, isSelected: boolean) => string;
+    colsClass: string;
+    control:  Control<FormValues>;
+  }
+
 export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
-  type FormValues = {
-    month: string[];
-    temperature: string[];
-    vacationType: string[];
-    continent: string[];
-    flightDuration: string[];
-  };
+
 
   const lastSubmittedRef = useRef<FormValues | null>(null);
 
@@ -86,29 +115,27 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
 
   const isEmpty = month.length === 0 && temperature.length === 0 && vacationType.length === 0 && continent.length === 0 && flightDuration.length === 0;
 
-  // hasChanged: compare current values to last submitted values so button enables immediately
   const currentValues = { month, temperature, vacationType, continent, flightDuration };
   const lastSubmitted = lastSubmittedRef.current ?? { month: [], temperature: [], vacationType: [], continent: [], flightDuration: [] };
   const hasChanged = !isEmpty && JSON.stringify(currentValues) !== JSON.stringify(lastSubmitted);
 
   const handleSubmit = (data: FormValues) => {
-    // mark these as last submitted and reset form state so it's not considered dirty
     lastSubmittedRef.current = data;
     reset(data, { keepValues: true });
     onSubmit(data);
   };
 
-  /*
-    Reusable ToggleGroup: renders a grid of toggle buttons controlled via RHF Controller.
-    Props:
-      - name: form field name
-      - options: array of items (any shape)
-      - getValue: (opt) => string  // value to use in form array
-      - renderContent: (opt) => JSX  // button inner content
-      - getButtonClass: (opt, isSelected) => string
-      - colsClass: string (Tailwind grid classes)
-  */
-  function ToggleGroup({ name, options, getValue, renderContent, getButtonClass, colsClass }: any) {
+ 
+
+  function ToggleGroup<OptionType>({
+    name,
+    options,
+    getValue,
+    renderContent,
+    getButtonClass,
+    colsClass,
+    control
+  }: ToggleGroupProps<OptionType>) {
     return (
       <div className={colsClass}>
         <Controller
@@ -116,7 +143,7 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
           control={control}
           render={({ field }) => (
             <>
-              {options.map((opt: any) => {
+              {options.map((opt) => {
                 const val = getValue(opt);
                 const cur = field.value || [];
                 const isSelected = cur.includes(val);
@@ -162,7 +189,6 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
   return (
     <form onSubmit={rhfHandleSubmit(handleSubmit)} className="bg-white rounded-3xl shadow-2xl p-12 border border-blue-200/50">
       <div className="space-y-10">
-        {/* Row 1: Vacation Type */}
         <div>
           <label className="block mb-5 text-gray-800 text-xl">
             What type of vacation are you looking for?
@@ -172,19 +198,18 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
             name="vacationType"
             control={control}
             options={vacationTypes}
-            getValue={(o: any) => o.id}
+            getValue={(o) => o.value}
             colsClass="grid grid-cols-3 gap-3"
-            getButtonClass={(opt: any, isSelected: boolean) => `rounded-xl p-3 transition-all flex flex-col items-center gap-2 ${getVacationTypeStyles(opt, isSelected)}`}
-            renderContent={(opt: any) => (
+            getButtonClass={(opt, isSelected: boolean) => `rounded-xl p-3 transition-all flex flex-col items-center gap-2 ${getVacationTypeStyles(opt, isSelected)}`}
+            renderContent={(opt) => (
               <>
-                <opt.icon className="w-6 h-6" />
+                {opt.icon && <opt.icon className="w-6 h-6" />}
                 <span className="text-sm">{opt.label}</span>
               </>
             )}
           />
         </div>
 
-        {/* Row 2: Continent */}
         <div>
           <label className="block mb-5 text-gray-800 text-xl">
             Which continent interests you?
@@ -194,10 +219,10 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
             name="continent"
             control={control}
             options={continents}
-            getValue={(o: any) => o.id}
+            getValue={(o) => o.value}
             colsClass="grid grid-cols-3 gap-3"
-            getButtonClass={(opt: any, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-blue-50 text-blue-700 border-2 border-blue-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
-            renderContent={(opt: any) => (
+            getButtonClass={(_, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-blue-50 text-blue-700 border-2 border-blue-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
+            renderContent={(opt) => (
               <>
                 <span className="text-xl">{opt.emoji}</span>
                 <span className="text-sm">{opt.label}</span>
@@ -206,7 +231,6 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
           />
         </div>
 
-        {/* Row 3: Month */}
         <div>
           <label className="block mb-5 text-gray-800 text-xl">
             When are you planning to travel?
@@ -216,39 +240,37 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
             name="month"
             control={control}
             options={months}
-            getValue={(o: any) => o.value}
+            getValue={(o) => o.value}
             colsClass="grid grid-cols-6 gap-2"
-            getButtonClass={(opt: any, isSelected: boolean) => `rounded-lg px-2 py-1.5 transition-all text-center cursor-pointer ${isSelected ? 'bg-cyan-50 text-cyan-700 border-2 border-cyan-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
-            renderContent={(opt: any) => <span className="text-sm">{opt.label}</span>}
+            getButtonClass={(_, isSelected: boolean) => `rounded-lg px-2 py-1.5 transition-all text-center cursor-pointer ${isSelected ? 'bg-cyan-50 text-cyan-700 border-2 border-cyan-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
+            renderContent={(opt) => <span className="text-sm">{opt.label}</span>}
           />
         </div>
 
-        {/* Row 4: Temperature */}
         <div>
           <label className="block mb-5 text-gray-800 text-xl">
-            What's your ideal temperature?
+            What&rsquo;s your ideal temperature?
             <span className="block text-sm text-gray-600 mt-2">Select weather preference</span>
           </label>
           <ToggleGroup
             name="temperature"
             control={control}
             options={temperatures}
-            getValue={(o: any) => o.value}
+            getValue={(o) => o.value}
             colsClass="grid grid-cols-4 gap-3"
-            getButtonClass={(opt: any, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-3 cursor-pointer ${isSelected ? 'bg-orange-50 text-orange-700 border-2 border-orange-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
-            renderContent={(opt: any) => (
+            getButtonClass={(_, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-3 cursor-pointer ${isSelected ? 'bg-orange-50 text-orange-700 border-2 border-orange-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
+            renderContent={(opt) => (
               <>
                 <div className="text-2xl">{opt.emoji}</div>
                 <div className="text-left">
                   <div className="text-sm">{opt.label}</div>
-                  <div className="text-xs opacity-70">{opt.degrees}</div>
+                  <div className="text-xs opacity-70">{opt.description}</div>
                 </div>
               </>
             )}
           />
         </div>
 
-        {/* Row 5: Flight Duration */}
         <div>
           <label className="block mb-5 text-gray-800 text-xl">
             How long is your flight?
@@ -258,22 +280,21 @@ export function VacationForm({ onSubmit, isLoading }: VacationFormProps) {
             name="flightDuration"
             control={control}
             options={flightDurations}
-            getValue={(o: any) => o.value}
+            getValue={(o) => o.value}
             colsClass="grid grid-cols-3 gap-3"
-            getButtonClass={(opt: any, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-purple-50 text-purple-700 border-2 border-purple-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
-            renderContent={(opt: any) => (
+            getButtonClass={(_, isSelected: boolean) => `rounded-xl p-3 transition-all flex items-center gap-2 cursor-pointer ${isSelected ? 'bg-purple-50 text-purple-700 border-2 border-purple-400' : 'bg-white/80 text-gray-600 hover:bg-white/90 hover:shadow-sm border-2 border-gray-200'}`}
+            renderContent={(opt) => (
               <>
                 <span className="text-2xl">{opt.emoji}</span>
                 <div className="text-left">
-                  <div className="text-sm">{opt.category}</div>
-                  <div className="text-xs opacity-70">{opt.label}</div>
+                  <div className="text-sm">{opt.label}</div>
+                  <div className="text-xs opacity-70">{opt.description}</div>
                 </div>
               </>
             )}
           />
         </div>
 
-        {/* Submit Button - Centered in new row */}
         <div className="pt-4 space-y-3">
             <div className="flex justify-center">
             <button
