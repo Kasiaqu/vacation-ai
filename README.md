@@ -74,8 +74,8 @@ Easily access and manage your saved favorite destinations.
 1. **Clone the repository:**
 
 	```bash
-	git clone https://github.com/Kasiaqu/vacation-ai.git
-	cd vacation-ai
+	git clone https://github.com/Kasiaqu/travel-planner.git
+	cd travel-planner
 	```
 
 2. **Install dependencies:**
